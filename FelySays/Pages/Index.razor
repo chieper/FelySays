@@ -1,0 +1,38 @@
+﻿@page "/"
+
+<h1>Say Hello!</h1>
+
+...random message of love, hope and faith
+
+<MessageBox Message=@messageToday />
+
+<div class="row" >
+    <button class="btn btn-primary" @onclick="SaveToClipboard">Save To Clipboard</button>
+</div>
+
+@code{
+
+    private string messageToday;
+    private Random rand = new Random();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        using Stream fileStream = await FileSystem.Current.OpenAppPackageFileAsync("365Say.txt");
+        using StreamReader reader = new StreamReader(fileStream);
+        var messageData1 = reader.ReadToEnd();
+        var messageData2 = messageData1.Split(Environment.NewLine);
+
+        var index = rand.Next(messageData2.Length);
+        messageToday =  messageData2[index];
+
+    }
+
+    private void SaveToClipboard()
+    {
+       
+        Clipboard.Default.SetTextAsync(@messageToday);
+
+    }
+
+}
